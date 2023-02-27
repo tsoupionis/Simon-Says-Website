@@ -22,13 +22,14 @@ $(".btn").click(function() {
     
     animatePress(userChosenColor); // gives pressed event when clicked
     
-    checkAnswer(userClickedPattern.length - 1);
+    checkAnswer(userClickedPattern.length - 1); 
+    // last index in array is always length of array minus 1
 })
 
 function nextSequence () {
     userClickedPattern = [];
 
-    level = level + 1; // add a new level for next sequence 
+    level++; // add a new level for next sequence 
     $("#level-title").text("Level " + level); 
     // change the text so that it is up to the level you are at 
 
@@ -51,16 +52,31 @@ function animatePress (currentColor) {
         $("#" + currentColor).removeClass("pressed"); }, 100); // removes the class 100 ms after being pressed
 }
 
-function checkAnswer (currentLevel) {
-    if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) {
-        console.log("success");
-
+function checkAnswer (currentLevel) { 
+    if (userClickedPattern[currentLevel] === gamePattern[currentLevel]) { 
+    // if the game pattern color is the same as the user color clicked in their arrays at each level
         if (userClickedPattern.length  === gamePattern.length) {
             setTimeout(function () {
                 nextSequence(); }, 1000);
+                // goes to next sequence after a second
         }
     }
-    else console.log("failure");
+    else {
+        var audio = new Audio("sounds/wrong.mp3");
+        audio.play(); // sound when you are wrong 
+        $("body").addClass("game-over"); // adds a css class called game-over
+        setTimeout(function () {
+            $("body").removeClass("game-over"); }, 200);
+        $("#level-title").text("Game Over, Press Any Key To Restart"); 
+        // replaces level-title with game over text
+        startOver(); // calls startOver function to start the game over in the same way started originally
+    }
+}
+
+function startOver () { // resets everything 
+    level = 0; 
+    gamePattern = [];
+    started = false;
 }
     
 
